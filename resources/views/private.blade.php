@@ -12,7 +12,42 @@
             <div class="alert alert-warning" role="alert">
             <h3 align="center">No tasks. Create now!</h3>
             </div>
+        @else
+            @foreach($all_tasks as $task)
+
+                <div class="jumbotron">
+                    <h1 class="display-4">{{$task->name}}</h1>
+                    <img src="{{asset('storage/' . $task->image)}}" style="width: 200px; height: 200px">
+                    <hr>
+                    <p class="lead">{{$task->description}}</p>
+                    <hr class="my-4">
+                    <p>{{$task->created_at}}</p>
+                    <hr>
+                    @if($task->status == 0)
+                        <p><b>STATUS</b>: Awaits moderation</p>
+                    <i class="fa fa-refresh fa-spin" style="font-size:34px; color: #b6a338"></i>
+                    @elseif($task->status == 1)
+                        <p><b>STATUS</b>: In process</p>
+                        <i class="fa fa-cog fa-spin" style="font-size:34px; color: #2ab27b"></i>
+                    @elseif($task->status == 2)
+                        <p><b>STATUS</b>: Decline</p>
+                        <i class="fa fa-wheelchair" style="font-size:48px;color:red"></i>
+                    @elseif($task->status == 3)
+                        <p><b>STATUS</b>: Successfully completed</p>
+                        <i class="fa fa-thumbs-o-up" style="font-size:48px;color:green"></i>
+                    @endif
+                    <hr>
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{{url('edit_page/' . $task->id)}}" role="button" style="width: 100px">Edit</a>
+                        <a class="btn btn-danger btn-lg" href="{{url('/delete_task/' . $task->id)}}" role="button" style="width: 100px">Delete</a>
+                    </p>
+                </div>
+
+
+                @endforeach
+
         @endif
+
 
     <div class="modal fade" id="taskCreateModal" tabindex="-1" role="dialog" aria-labelledby="taskCreateModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -28,11 +63,11 @@
                         {{csrf_field()}}
                         <div class="form-group">
                             <label for="task-name" class="col-form-label">Name task:</label>
-                            <input type="text" class="form-control" id="task-name" name="name">
+                            <input type="text" class="form-control" id="task-name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="desc-text" class="col-form-label">Description task:</label>
-                            <textarea class="form-control" id="desc-text" name="description"></textarea>
+                            <textarea class="form-control" id="desc-text" name="description" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="loadPicture">Your picture for task</label>

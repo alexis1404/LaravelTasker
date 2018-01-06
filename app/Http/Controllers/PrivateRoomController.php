@@ -4,17 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Task;
+use App\User;
 use Storage;
 use Sentinel;
+use Image;
+use Illuminate\Http\File;
 
 class PrivateRoomController extends Controller
 {
     public function index()
     {
-        $all_tasks = Task::all();
+        $user = User::find(Sentinel::check()->id);
+
+        $all_tasks = $user->tasks;
+
 
         return view('private', compact('all_tasks'));
     }
+
 
     public function createTask(Request $request)
     {
@@ -33,11 +40,12 @@ class PrivateRoomController extends Controller
         $file = $request->file('image');
 
         if($file && $file->isValid()) {
-            $path = rand(1, 99999) . '_' . $file->getClientOriginalName();
-            $file->move(storage_path('images'), $path);
-            $new_task->image = 'images' . "/" . $path;
-        }
 
+            $path = rand(1, 99999) . '_' . $file->getClientOriginalName();
+            $url = Storage::disk('public')->put('', $file);
+            $new_task->image =  $url;
+
+        }
 
         $new_task->user()->associate($user = Sentinel::check());
 
@@ -45,4 +53,19 @@ class PrivateRoomController extends Controller
 
         return redirect('/private_room');
     }
+
+    public function deleteTask($id)
+    {
+        Task::find($id)->delete();
+
+        return redirect('/private_room');
+    }
+
+    public function editPage($id)
+    {
+        $task = Task::find($id);
+
+        return view('edit', compact('task'));
+    }
+
 }
