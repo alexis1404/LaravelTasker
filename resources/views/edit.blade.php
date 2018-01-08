@@ -6,16 +6,18 @@
     <hr>
 
     <form action="{{url('edit_task/' . $task->id)}}" method="post" enctype="multipart/form-data">
+        {{csrf_field()}}
         <div class="form-group">
-            <label for="exampleInputEmail1">Task name</label>
-            <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="">
+            <label>Task name</label>
+            <input type="text" class="form-control" name="name" value="{{$task->name}}">
         </div>
         <div class="form-group">
-            <label for="exampleInputPassword1">Task description</label>
-            <input type="password" class="form-control"  placeholder="">
+            <label>Task description</label>
+            <textarea class="form-control" name="description">{{$task->description}}</textarea>
         </div>
         <div class="form-group">
-            <label for="loadPicture">Your picture for task</label>
+            <p>Current image</p>
+            <img src="{{asset('storage/' . $task->image)}}" style="width: 200px; height: 200px">
             <hr>
             <input type="file" name="image" accept=".jpg, .jpeg, .png">
         </div>

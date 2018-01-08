@@ -30,7 +30,36 @@
             font-family: 'Courgette', cursive;
         }
 
+        a.button1 {
+            position: relative;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            text-shadow: -1px -1px #004085;
+            user-select: none;
+            padding: .8em 2em;
+            outline: none;
+            background-color: #004085;
+            background-image: linear-gradient(45deg, rgba(255,255,255,.0) 30%, rgba(255,255,255,.8), rgba(255,255,255,.0) 70%), radial-gradient(190% 100% at 50% 0%, rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 50%, rgba(0,0,0,0) 50%);
+            background-repeat: no-repeat;
+            background-size: 200% 100%, auto;
+            background-position: 200% 0, 0 0;
+            box-shadow: rgba(0,0,0,.3) 0 2px 5px;
+        }
+        a.button1:active {
+            top: 1px;
+            box-shadow: none;
+        }
+        a.button1:hover {
+            transition: .5s linear;
+            background-position: -200% 0, 0 0;
+        }
 
+
+        #info-area{
+
+            font-family: 'Courgette', cursive;
+        }
 
     </style>
 </head>

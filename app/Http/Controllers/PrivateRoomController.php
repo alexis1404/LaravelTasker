@@ -41,7 +41,6 @@ class PrivateRoomController extends Controller
 
         if($file && $file->isValid()) {
 
-            $path = rand(1, 99999) . '_' . $file->getClientOriginalName();
             $url = Storage::disk('public')->put('', $file);
             $new_task->image =  $url;
 
@@ -66,6 +65,34 @@ class PrivateRoomController extends Controller
         $task = Task::find($id);
 
         return view('edit', compact('task'));
+    }
+
+    public function editTask($id, Request $request)
+    {
+
+        $task = Task::find($id);
+
+        if(isset($request->name)){
+            $task->name = $request->name;
+        }
+
+        if(isset($request->description)){
+            $task->description = $request->description;
+        }
+
+        $file = $request->file('image');
+
+        if($file && $file->isValid()){
+            Storage::disk('public')->delete($task->image);
+            $url = Storage::disk('public')->put('', $file);
+            $task->image =  $url;
+
+        }
+
+        $task->save();
+
+        return redirect('/private_room');
+
     }
 
 }
