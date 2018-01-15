@@ -28,7 +28,7 @@
 
     <button id="modalbutton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#adminTaskModal" data-whatever="@mdo" hidden="true">Open modal for @mdo</button>
 
-    <h1 align="center" style="margin-top: 30px">Welcome, sir Admin! ;)</h1>
+    <h1 align="center" style="margin-top: 30px">Willkommen, Herr Admin! ;)</h1>
     <hr>
 
     <p align="center" id="backPanel">
@@ -136,6 +136,33 @@
                                 $('#backPanel').empty();
                                 $('#tasks_list').empty();
                                 renderTasklist();
+                            }
+
+                        });
+                    }
+                });
+
+                $( document ).on( "click", "#acceptUserData", function() {
+                    event.preventDefault();
+                    isEdit = confirm('Are you sure?');
+                    if(isEdit) {
+                        let form = $('#editUserForm');
+                        let formData = new FormData(form.get(0));
+
+                        $.ajax({
+                            url: 'admin/edit_user/' + $('#userId').data('userid'),
+                            method: 'POST',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (result) {
+                                $('#backPanel').empty();
+                                $('#user_list').empty();
+                                userRequest();
                             }
 
                         });
@@ -333,8 +360,8 @@
                                     '<input type="checkbox" class="form-check-input" name="notify" id="notifCheck">' +
                                     '<label class="form-check-label" for="notifCheck">Notify this user about the changes</label>' +
                                     '<hr>' +
-                                '<button class="btn btn-primary" type="submit" id="acceptEditData">Accept</button>' +
-                                '</form><p id="taskId" hidden data-taskid="' + result['id'] + '"></p><hr>'+
+                                '<button class="btn btn-primary" type="submit" id="acceptUserData">Accept</button>' +
+                                '</form><p id="userId" hidden data-userid="' + result['id'] + '"></p><hr>'+
                                     '<button type="button" class="btn btn-danger btn-lg">DELETE THIS USER</button>'
                             );
 

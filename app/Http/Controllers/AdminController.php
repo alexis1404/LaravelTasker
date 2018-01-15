@@ -6,6 +6,7 @@ use App\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Storage;
+use Sentinel;
 use App\User;
 
 class AdminController extends Controller
@@ -75,5 +76,31 @@ class AdminController extends Controller
         $user = User::find($id);
 
         return new JsonResponse($user);
+    }
+
+    public function editUser($id, Request $request)
+    {
+        $user = Sentinel::findById($id);
+        $credentials = [];
+
+        if(isset($request->name)){
+            $credentials['first_name'] = $request->name;
+        }
+
+        if(isset($request->email)){
+            $credentials['email'] = $request->email;
+        }
+
+        if(isset($request->password)){
+            $credentials['password'] = $request->password;
+        }
+
+        Sentinel::update($user, $credentials);
+
+        if(isset($request->notify) && $request->notify != null){
+            //Notifications will be added
+        }
+
+        return response('1', 200);
     }
 }
