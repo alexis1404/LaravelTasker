@@ -86,7 +86,6 @@ class PrivateRoomController extends Controller
             Storage::disk('public')->delete($task->image);
             $url = Storage::disk('public')->put('', $file);
             $task->image =  $url;
-
         }
 
         $task->save();

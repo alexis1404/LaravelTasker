@@ -38,7 +38,7 @@
     <ul class="list-group" id="user_list">
     </ul>
 
-    <div id="tasks_list">
+    <div id="tasks_list" style="padding-bottom: 2%">
 
     </div>
 
@@ -108,6 +108,47 @@
                     renderTasklist();
                 });
 
+                $( document ).on( "click", "#backButton2", function() {
+                    $('#backPanel').empty();
+                    $('#user_list').empty();
+                    userRequest();
+                });
+
+
+                $( document ).on( "click", "#acceptEditData", function() {
+                    event.preventDefault();
+                    isEdit = confirm('Are you sure?');
+                    if(isEdit) {
+                        let form = $('#editTaskForm');
+                        let formData = new FormData(form.get(0));
+
+                        $.ajax({
+                            url: '/admin/edit_task/' + $('#taskId').data('taskid'),
+                            method: 'POST',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (result) {
+                                $('#backPanel').empty();
+                                $('#tasks_list').empty();
+                                renderTasklist();
+                            }
+
+                        });
+                    }
+                });
+
+                $('#viewUser').click(function () {
+                    event.preventDefault();
+                    $('#user_list').empty();
+
+                    renderUserForm();
+                });
+
                 ///============================================CUSTOM FUNCTIONS=================================///
                 function getTaskStatusTemplate(status) {
                     temp2 = null;
@@ -137,7 +178,7 @@
                     temp1 = null;
                     if(status == 0){
                         temp1 =
-                            '<select class="form-control" id="controlSelect1">' +
+                            '<select id="selectTaskStatus" class="form-control" id="controlSelect1" name="status">' +
                             '<option value="0" selected>Awaits moderation</option>' +
                             '<option value="1">In process</option>' +
                             '<option value="2">Decline</option>' +
@@ -145,7 +186,7 @@
                             '</select>';
                     }else if(status == 1){
                         temp1 =
-                            '<select class="form-control" id="controlSelect1">' +
+                            '<select id="selectTaskStatus" class="form-control" id="controlSelect1" name="status">' +
                             '<option value="0" >Awaits moderation</option>' +
                             '<option value="1" selected>In process</option>' +
                             '<option value="2">Decline</option>' +
@@ -153,7 +194,7 @@
                             '</select>';
                     }else if(status == 2){
                         temp1 =
-                        '<select class="form-control" id="controlSelect1">' +
+                        '<select id="selectTaskStatus" class="form-control" id="controlSelect1" name="status">' +
                         '<option value="0" >Awaits moderation</option>' +
                         '<option value="1">In process</option>' +
                         '<option value="2" selected>Decline</option>' +
@@ -161,7 +202,7 @@
                         '</select>';
                     }else if (status == 3){
                         temp1 =
-                            '<select class="form-control" id="controlSelect1">' +
+                            '<select id="selectTaskStatus" class="form-control" id="controlSelect1" name="status">' +
                             '<option value="0" >Awaits moderation</option>' +
                             '<option value="1">In process</option>' +
                             '<option value="2">Decline</option>' +
@@ -234,34 +275,74 @@
                     $.ajax({
                         url: "admin/get_task/" + id_task,
                         success: function (result) {
+                            event.preventDefault();
                             $('#tasks_list').append(
-                            '<form style="padding-bottom: 30px">' +
+                            '<form id="editTaskForm" method="post" enctype="multipart/form-data">' +
                                 '<div class="form-group">' +
                                 '<label>Task name</label>' +
-                            '<input type="text" class="form-control" name="name" value="' + result['name'] +'">' +
+                            '<input type="text" class="form-control" id="taskNameField" name="name" value="' + result['name'] +'">' +
                                 '</div>' +
                                 '<div class="form-group">' +
                                 '<label>Task description</label>' +
-                            '<textarea class="form-control" name="description">' + result['description'] +'</textarea>' +
+                            '<textarea id="taskDescriptionField" class="form-control" name="description">' + result['description'] +'</textarea>' +
                                 '</div>' +
                                 '<div class="form-group">' +
                                 '<p>Current image</p>' +
                             '<img src="storage/' + result['image'] +'" style="width: 200px; height: 200px">' +
                                 '<hr>' +
-                                '<input type="file" name="image" accept=".jpg, .jpeg, .png">' +
+                                '<input id="taskImage" type="file" name="image" accept=".jpg, .jpeg, .png">' +
                                 '</div>' +
                                     '<hr>' +
                                 '<div class="form-group">' +
                                 '<label for="controlSelect1"><b>Status this task: </b></label>' +
                                 getSelectStatusList(result['status']) +
                                 '</div> <hr>' +
-                                '<button class="btn btn-primary">Accept</button>' +
+                                    '<p id="taskId" hidden data-taskid="' + result['id'] +'"></p>' +
+                                '<button class="btn btn-primary" type="submit" id="acceptEditData">Accept</button>' +
                                 '</form>'
                             );
 
                             $('#backPanel').append(
                                 '<button id="backButton1" type="button" class="btn btn-primary btn-lg">BACK</button>'
                             );
+                        },
+
+                    });
+                }
+
+                function renderUserForm() {
+                    $.ajax({
+                        url: "admin/get_user/" + temp,
+                        success: function (result) {
+                            $('#user_list').append(
+                                '<form id="editUserForm" method="post" enctype="multipart/form-data">' +
+                                '<div class="form-group">' +
+                                '<label>User name</label>' +
+                                '<input type="text" class="form-control" id="userNameField" name="name" value="' + result['first_name'] +'">' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                '<label>User email: </label>' +
+                                '<input type="email" id="taskEmailField" class="form-control" name="email" value="' + result['email'] +'">' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                '<p>New password</p>' +
+                                '<input type="password" id="passField" class="form-control" name="password">' +
+                                '</div>' +
+                                '<hr>' +
+                                    '<div class="form-check">' +
+                                    '<input type="checkbox" class="form-check-input" name="notify" id="notifCheck">' +
+                                    '<label class="form-check-label" for="notifCheck">Notify this user about the changes</label>' +
+                                    '<hr>' +
+                                '<button class="btn btn-primary" type="submit" id="acceptEditData">Accept</button>' +
+                                '</form><p id="taskId" hidden data-taskid="' + result['id'] + '"></p><hr>'+
+                                    '<button type="button" class="btn btn-danger btn-lg">DELETE THIS USER</button>'
+                            );
+
+                            $('#backPanel').append(
+                                '<button id="backButton2" type="button" class="btn btn-primary btn-lg">BACK</button>'
+                            );
+
+                            setTimeout("$('#adminTaskModal').trigger('click');", 500);
                         },
 
                     });

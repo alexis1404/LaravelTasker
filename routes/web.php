@@ -49,5 +49,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/get_user_task/{id}', 'AdminController@getUserTasks')->name('adminGetUserTask');
     Route::get('admin/delete_task/{id}', 'AdminController@deleteTask')->name('adminDeleteTask');
     Route::get('admin/get_task/{id}', 'AdminController@getTask')->name('adminGetTask');
+    Route::post('admin/edit_task/{id}', 'AdminController@editTask')->name('adminEditTask');
+    Route::get('admin/get_user/{id}', 'AdminController@getUser')->name('adminGetUser');
+    Route::post('admin/edit_user/{id}', 'AdminController@editUser')->name('adminEditUser');
 
 });
