@@ -32,4 +32,9 @@ class User extends Authenticatable
 
         return $this->hasMany(Task::class, 'user_id');
     }
+
+    public function routeNotificationForMail()
+    {
+        return $this->email;
+    }
 }

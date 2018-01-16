@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\TaskEdit;
 use Storage;
 use Sentinel;
 use App\User;
@@ -66,6 +68,10 @@ class AdminController extends Controller
             $task->image =  $url;
         }
 
+        if(isset($request->notify) && $request->notify != null){
+            Notification::send(User::find($request->user_id), new TaskEdit($task));
+        }
+
         $task->save();
 
         return response('1',200);
@@ -98,7 +104,7 @@ class AdminController extends Controller
         Sentinel::update($user, $credentials);
 
         if(isset($request->notify) && $request->notify != null){
-            //Notifications will be added
+
         }
 
         return response('1', 200);

@@ -320,6 +320,11 @@
                                 '<input id="taskImage" type="file" name="image" accept=".jpg, .jpeg, .png">' +
                                 '</div>' +
                                     '<hr>' +
+                                '<div class="form-check">' +
+                                '<input type="checkbox" class="form-check-input" name="notify" id="notifCheckTask">' +
+                                '<label class="form-check-label" for="notifCheckTask">Notify this user about the changes</label>' +
+                                '<hr>' +
+                                    '<input type="hidden" name="user_id" value="' + result['user_id'] +'">' +
                                 '<div class="form-group">' +
                                 '<label for="controlSelect1"><b>Status this task: </b></label>' +
                                 getSelectStatusList(result['status']) +
