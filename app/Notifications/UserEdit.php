@@ -50,7 +50,9 @@ class UserEdit extends Notification
             ->line('Your account data was edited!')
             ->line('Your current name: ' . $this->user->first_name)
             ->line('Your current email: ' . $this->user->email)
-            ->line('Your new password: ' . $this->passChanger());
+            ->line('Your new password: ' . $this->passChanger())
+            ->from('luceatlux7@gmail', 'Don Key')
+            ->action('Go to Tasker!', env('APP_URL'));
     }
 
     /**
