@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\TaskEdit;
+use App\Notifications\UserEdit;
 use Storage;
 use Sentinel;
 use App\User;
@@ -86,6 +87,9 @@ class AdminController extends Controller
 
     public function editUser($id, Request $request)
     {
+         $pass_changed = false;
+         $new_password = null;
+
         $user = Sentinel::findById($id);
         $credentials = [];
 
@@ -97,14 +101,16 @@ class AdminController extends Controller
             $credentials['email'] = $request->email;
         }
 
-        if(isset($request->password)){
+        if(isset($request->password) && $request->password != ''){
             $credentials['password'] = $request->password;
+            $pass_changed = true;
+            $new_password = $request->password;
         }
 
         Sentinel::update($user, $credentials);
 
         if(isset($request->notify) && $request->notify != null){
-
+            Notification::send(User::find($user->id), new UserEdit($user, $pass_changed, $new_password));
         }
 
         return response('1', 200);

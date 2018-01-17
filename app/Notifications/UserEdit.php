@@ -2,26 +2,28 @@
 
 namespace App\Notifications;
 
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class TaskEdit extends Notification
+class UserEdit extends Notification
 {
     use Queueable;
 
-    private $task;
-
+    private $user;
+    private $pass_changed;
+    private $new_password;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($task)
+    public function __construct($user, $pass_changed, $new_password)
     {
-        $this->task = $task;
+        $this->user = $user;
+        $this->pass_changed = $pass_changed;
+        $this->new_password = $new_password;
     }
 
     /**
@@ -45,12 +47,10 @@ class TaskEdit extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello, friend!')
-            ->line('Your task was edited!')
-            ->line('Current task name: ' . $this->task->name)
-            ->line('Current task description: ' . $this->task->description)
-            ->line('Current task status: ' . $this->taskStatusRender($this->task->status))
-            ->from('luceatlux7@gmail', 'Don Key')
-            ->action('Go to Tasker!', env('APP_URL'));
+            ->line('Your account data was edited!')
+            ->line('Your current name: ' . $this->user->first_name)
+            ->line('Your current email: ' . $this->user->email)
+            ->line('Your new password: ' . $this->passChanger());
     }
 
     /**
@@ -66,16 +66,12 @@ class TaskEdit extends Notification
         ];
     }
 
-    public function taskStatusRender($status)
+    public function passChanger()
     {
-        if($status == 0){
-            return ' Awaits moderation';
-        }elseif ($status == 1){
-            return ' In process';
-        }elseif ($status == 2){
-            return ' Decline';
-        }elseif ($status == 3){
-            return ' Successfully completed';
+        if($this->pass_changed){
+            return $this->new_password;
+        }else{
+            return 'current password is actual';
         }
     }
 }
