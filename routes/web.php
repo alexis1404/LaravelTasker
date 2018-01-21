@@ -37,6 +37,8 @@ Route::group(['middleware' => 'checker'], function () {
     Route::get('delete_task/{id}', 'PrivateRoomController@deleteTask')->name('deleteTask');
     Route::get('edit_page/{id}', 'PrivateRoomController@editPage')->name('editPage');
     Route::post('edit_task/{id}', 'PrivateRoomController@editTask')->name('editTask');
+    Route::get('account_room', 'PrivateRoomController@accPage')->name('accPage');
+    Route::post('edit_user/{id}', 'PrivateRoomController@editAccount')->name('editAccount');
 
 });
 

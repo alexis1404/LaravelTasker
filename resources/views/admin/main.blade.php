@@ -86,7 +86,9 @@
                             url: "admin/delete_task/" + $(this).data('taskdel'),
                             method: 'GET',
                             success: function (result) {
-
+                                $('#backPanel').empty();
+                                $('#tasks_list').empty();
+                                renderTasklist();
                             },
 
                         });

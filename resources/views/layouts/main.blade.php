@@ -24,7 +24,8 @@
     <style>
 
         body{
-            background-color: #fff;
+            background: url("{{asset('images/pattern2.jpg')}}");
+            background-size: 100%;
         }
 
         #header{
@@ -37,16 +38,16 @@
             color: white;
             font-weight: bold;
             text-decoration: none;
-            text-shadow: -1px -1px #004085;
+            text-shadow: -1px -1px #1d1d1c;
             user-select: none;
             padding: .8em 2em;
             outline: none;
-            background-color: #004085;
-            background-image: linear-gradient(45deg, rgba(255,255,255,.0) 30%, rgba(255,255,255,.8), rgba(255,255,255,.0) 70%), radial-gradient(190% 100% at 50% 0%, rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 50%, rgba(0,0,0,0) 50%);
+            background-color: #1d1d1c;
+            background-image: linear-gradient(45deg, rgba(255,255,255,.0) 30%, rgba(255,255,255,.8), rgba(66, 66, 65, 0) 70%), radial-gradient(190% 100% at 50% 0%, rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 50%, rgba(0,0,0,0) 50%);
             background-repeat: no-repeat;
             background-size: 200% 100%, auto;
             background-position: 200% 0, 0 0;
-            box-shadow: rgba(0,0,0,.3) 0 2px 5px;
+            box-shadow: rgba(29, 29, 28, 0.3) 0 2px 5px;
         }
         a.button1:active {
             top: 1px;
@@ -79,8 +80,14 @@
     <a class="navbar-brand" href="{{route('logout')}}">Logout</a>
         <a class="navbar-brand" href="{{route('privatePage')}}">Private room</a>
     @endif
-
-
+    @if(Sentinel::check() && Sentinel::inRole('admin'))
+        <a class="navbar-brand" href="{{route('adminPage')}}">Admin Room</a>
+    @endif
+    <a class="navbar-brand" href="{{route('accPage')}}" title="Go to account room">Welcome
+        @if($user = Sentinel::check())
+            {{$user->first_name}}
+        @endif
+        !</a>
 </nav>
 
 <div class="container-fluid">
@@ -91,7 +98,7 @@
         </div>
         <div class="col-9">
             <div id="header">
-                <h1 align="center" style="font-size: 100px">TASKER</h1>
+                <h1 align="center" style="font-size: 100px; text-shadow: 5px 1px 6px #636b6f;">TASKER</h1>
             </div>
         </div>
         <div class="col">

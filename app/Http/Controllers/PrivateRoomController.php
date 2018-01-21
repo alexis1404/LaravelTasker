@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Task;
 use App\User;
@@ -94,4 +95,32 @@ class PrivateRoomController extends Controller
 
     }
 
+    public function accPage()
+    {
+        $user = User::find(Sentinel::check()->id);
+
+        return view('account_page', compact('user'));
+    }
+
+    public function editAccount($id, Request $request)
+    {
+        $user = Sentinel::findById($id);
+        $credentials = [];
+
+        if(isset($request->name)){
+            $credentials['first_name'] = $request->name;
+        }
+
+        if(isset($request->email)){
+            $credentials['email'] = $request->email;
+        }
+
+        if(isset($request->password) && $request->password != ''){
+            $credentials['password'] = $request->password;
+        }
+
+        Sentinel::update($user, $credentials);
+
+        return new JsonResponse($id);
+    }
 }
