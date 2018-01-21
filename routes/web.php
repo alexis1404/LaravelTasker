@@ -29,6 +29,7 @@ Route::post('auth_form', 'AuthController@authForm')->name('authForm');
 //logout
 Route::get('logout', 'AuthController@logout')->name('logout');
 
+
 Route::group(['middleware' => 'checker'], function () {
 
     //Private room controllers

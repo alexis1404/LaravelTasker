@@ -43,14 +43,11 @@ class TaskEdit extends Notification
      */
     public function toMail($notifiable)
     {
+        //WARNING! This notification use custom mail-layout (as demo).
         return (new MailMessage)
                     ->greeting('Hello, friend!')
-            ->line('Your task was edited!')
-            ->line('Current task name: ' . $this->task->name)
-            ->line('Current task description: ' . $this->task->description)
-            ->line('Current task status: ' . $this->taskStatusRender($this->task->status))
             ->from('luceatlux7@gmail', 'Don Key')
-            ->action('Go to Tasker!', env('APP_URL'));
+            ->view('mail.edit_task_mail', ['task' => $this->task, 'task_status' => $this->taskStatusRender($this->task->status)]);
     }
 
     /**
