@@ -12,6 +12,8 @@
 
 - If you use *nix, configure your server for Laravel applications (for example, folder access settings)
 
+- Create in your database user with role 'admin' (admin`s created only this method)
+
 - Enjoy ;) 
 
 ## Disclaimer
