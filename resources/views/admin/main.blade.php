@@ -13,10 +13,11 @@
                 </div>
                 <div class="modal-body">
                     <h5>User</h5>
-                    <p>Click me and <a href="#" role="button" class="btn btn-secondary popover-test" id="viewUser" style="background-color: #2ab27b">EDIT</a> user</p>
+                    <p>Click me and <a href="#" role="button" class="btn btn-secondary popover-test" id="viewUser" style="background-color: #2ab27b">EDIT</a> this user</p>
                     <hr>
                     <h5>User`s tasks</h5>
-                    <p>Click me and <a href="#" role="button" class="btn btn-secondary popover-test" id="editTask" style="background-color: #2a88bd">VIEW TASKS</a> this user.</p>
+                    <p>Click me and <a href="#" role="button" class="btn btn-secondary popover-test" id="editTask" style="background-color: #2a88bd">VIEW TASKS</a> of this user.</p>
+                    <p>Click me and <a href="#" role="button" class="btn btn-secondary popover-test" id="taskMailButton" style="background-color: #2a88bd">SEND MESSAGE</a> to this user.</p>
                     <hr>
                 </div>
                 <div class="modal-footer">
@@ -80,7 +81,7 @@
 
                 $( document ).on( "click", ".buttonDeleteTask", function() {
                     event.preventDefault();
-                    isDel = confirm('Are you sure?');
+                    let isDel = confirm('Are you sure?');
                     if(isDel){
                         $.ajax({
                             url: "admin/delete_task/" + $(this).data('taskdel'),
@@ -119,7 +120,7 @@
 
                 $( document ).on( "click", "#acceptEditData", function() {
                     event.preventDefault();
-                    isEdit = confirm('Are you sure?');
+                    let isEdit = confirm('Are you sure?');
                     if(isEdit) {
                         let form = $('#editTaskForm');
                         let formData = new FormData(form.get(0));
@@ -146,7 +147,7 @@
 
                 $( document ).on( "click", "#acceptUserData", function() {
                     event.preventDefault();
-                    isEdit = confirm('Are you sure?');
+                    let isEdit = confirm('Are you sure?');
                     if(isEdit) {
                         let form = $('#editUserForm');
                         let formData = new FormData(form.get(0));
@@ -176,6 +177,42 @@
                     $('#user_list').empty();
 
                     renderUserForm();
+                });
+
+                $('#taskMailButton').click(function () {
+                    event.preventDefault();
+                    renderUserMail(temp);
+                });
+
+                $( document ).on( "click", "#sendUserMessageButton", function() {
+                    event.preventDefault();
+                    if($('#textUserMailField').val() != '') {
+                        let isSend = confirm('Are you sure?');
+                        if (isSend) {
+                            let form = $('#sendUserMessage');
+                            let formData = new FormData(form.get(0));
+
+                            $.ajax({
+                                url: 'admin/send_mail_user',
+                                method: 'POST',
+                                contentType: false,
+                                processData: false,
+                                data: formData,
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function (result) {
+                                    $('#backPanel').empty();
+                                    $('#user_list').empty();
+                                    userRequest();
+                                }
+
+                            });
+                        }
+                    }else {
+                        alert('Mail cannot be empty!');
+                    }
                 });
 
                 ///============================================CUSTOM FUNCTIONS=================================///
@@ -380,6 +417,33 @@
                         },
 
                     });
+                }
+
+                function renderUserMail(user_id) {
+                    $('#backPanel').empty();
+                    $('#user_list').empty();
+                    $('#user_list').append(
+                        '<form id="sendUserMessage" method="post" enctype="multipart/form-data">' +
+                        '<div class="form-group">' +
+                        '<label>Message text:</label>' +
+                        '<textarea class="form-control" name="mail_message" rows="10" cols="40" id="textUserMailField"></textarea>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Message attach:</label><br>' +
+                        '<input type="file" name="attach">' +
+                        '</div>' +
+                        '<hr>' +
+                            '<input type="hidden" name="user_id" value="' +  user_id +'">' +
+                        '<button class="btn btn-primary" type="submit" id="sendUserMessageButton">Accept</button>' +
+                        '</form>'
+                    );
+
+                    $('#backPanel').append(
+                        '<button id="backButton2" type="button" class="btn btn-primary btn-lg">BACK</button>'
+                    );
+
+                    setTimeout("$('#adminTaskModal').trigger('click');", 500);
+
                 }
 
             });
