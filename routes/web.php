@@ -56,5 +56,6 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/get_user/{id}', 'AdminController@getUser')->name('adminGetUser');
     Route::post('admin/edit_user/{id}', 'AdminController@editUser')->name('adminEditUser');
     Route::post('admin/send_mail_user', 'AdminController@sendMailUser')->name('sendMailUser');
+    Route::post('admin/send_mail_task_user', 'AdminController@sendMailTaskUser')->name('sendMailTaskUser');
 
 });

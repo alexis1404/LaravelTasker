@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\TaskEdit;
 use App\Notifications\UserEdit;
 use App\Mail\TaskMail;
+use App\Mail\CurrentTaskMail;
 use Mail;
 use Storage;
 use Sentinel;
@@ -136,13 +137,23 @@ class AdminController extends Controller
         return response('1', 200);
     }
 
-    // TEST METHODS!!!!///////////////////////
-    public function test()
+    public function sendMailTaskUser(Request $request)
     {
+        $attach = null;
 
-        Mail::to('luceatlux7@gmail.com')
-            ->send(new TaskMail('test test test test', asset('storage/' . 'f51d08be05919290355ac004cdd5c2d6.png')));
+        $task = Task::find($request->task_id);
 
-        return 'OK';
+
+        $file = $request->file('attach');
+
+        if($file && $file->isValid()){
+            $attach = $file;
+        }
+
+        Mail::to($task->user->email)
+            ->send(new CurrentTaskMail($task->name, $request->mail_message, $attach));
+
+        return response('1', 200);
     }
+
 }

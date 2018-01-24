@@ -215,6 +215,43 @@
                     }
                 });
 
+                $( document ).on( "click", ".buttonMailTask", function() {
+                    event.preventDefault();
+                    renderTaskMail($(this).data('mailtask'));
+
+                });
+
+                $( document ).on( "click", "#sendTaskMessageButton", function() {
+                    event.preventDefault();
+                    if($('#textTaskMailField').val() != '') {
+                        let isSend = confirm('Are you sure?');
+                        if (isSend) {
+                            let form = $('#sendTaskMessage');
+                            let formData = new FormData(form.get(0));
+
+                            $.ajax({
+                                url: 'admin/send_mail_task_user',
+                                method: 'POST',
+                                contentType: false,
+                                processData: false,
+                                data: formData,
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function (result) {
+                                    $('#backPanel').empty();
+                                    $('#tasks_list').empty();
+                                    renderTasklist();
+                                }
+
+                            });
+                        }
+                    }else {
+                        alert('Mail cannot be empty!');
+                    }
+                });
+
                 ///============================================CUSTOM FUNCTIONS=================================///
                 function getTaskStatusTemplate(status) {
                     temp2 = null;
@@ -298,7 +335,8 @@
                                         '<hr>' +
                                         '<p class="lead">' +
                                         '<a class="btn btn-primary btn-lg buttonEditTask" href="#" role="button" style="width: 100px" data-taskcontent=" ' + result[i].id  +' ">Edit</a>' + '   ' +
-                                        '<a class="btn btn-danger btn-lg buttonDeleteTask" href="#" role="button" style="width: 100px" data-taskdel="' + result[i].id +'">Delete</a>' +
+                                        '<a class="btn btn-danger btn-lg buttonDeleteTask" href="#" role="button" style="width: 100px" data-taskdel="' + result[i].id +'">Delete</a>' + '  ' +
+                                        '<a class="btn btn-success btn-lg buttonMailTask" href="#" role="button" style="width: 120px" data-mailtask="' + result[i].id +'">Send Mail</a>' +
                                         '</p>' +
                                         '</div>'
                                     );
@@ -444,6 +482,30 @@
 
                     setTimeout("$('#adminTaskModal').trigger('click');", 500);
 
+                }
+
+                function renderTaskMail(task_id) {
+                    $('#backPanel').empty();
+                    $('#tasks_list').empty();
+                    $('#tasks_list').append(
+                        '<form id="sendTaskMessage" method="post" enctype="multipart/form-data">' +
+                        '<div class="form-group">' +
+                        '<label>Message text:</label>' +
+                        '<textarea class="form-control" name="mail_message" rows="10" cols="40" id="textTaskMailField"></textarea>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Message attach:</label><br>' +
+                        '<input type="file" name="attach">' +
+                        '</div>' +
+                        '<hr>' +
+                        '<input type="hidden" name="task_id" value="' +  task_id +'">' +
+                        '<button class="btn btn-primary" type="submit" id="sendTaskMessageButton">Accept</button>' +
+                        '</form>'
+                    );
+
+                    $('#backPanel').append(
+                        '<button id="backButton1" type="button" class="btn btn-primary btn-lg">BACK</button>'
+                    );
                 }
 
             });
